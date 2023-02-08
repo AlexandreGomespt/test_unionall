@@ -1,0 +1,9 @@
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\bin\Debug\admin_db.dacpac
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\bin\Debug\database.dll
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\bin\Debug\database.pdb
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\Model.xml
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\refactor.xml
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\postdeploy.sql
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\predeploy.sql
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\database.dll
+C:\Users\alexandre.a.gomes\source\repos\HNK_Unified_DW_DB\database\database\obj\Debug\database.pdb

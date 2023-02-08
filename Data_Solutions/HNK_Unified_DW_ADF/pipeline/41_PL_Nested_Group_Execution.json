@@ -1,0 +1,117 @@
+{
+	"name": "41_PL_Nested_Group_Execution",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1,int(activity('Lookup1').output.firstRow.Object_order))",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "PL_Object_Same_Level",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "51_PL_Object_Same_Level",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Model_Name": {
+										"value": "@pipeline().parameters.Model_Name",
+										"type": "Expression"
+									},
+									"Model_Group_Order": {
+										"value": "@pipeline().parameters.Group_Level_iteration",
+										"type": "Expression"
+									},
+									"Object_Order": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"Pipeline_Run_ID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"Pipeline_Group_Run_ID": {
+										"value": "@pipeline().parameters.Pipeline_Group_Run_ID",
+										"type": "Expression"
+									},
+									"Pipeline_Model_Run_ID": {
+										"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT   MODEL_NAME\n\t\t,GROUP_NAME\n\t\t,MODEL_ORDER \n\t\t,GROUP_ORDER\n\t\t,MAX(OBJECT_ORDER) AS OBJECT_ORDER  \n\t\tFROM CONFIG.EXECUTION_LIST_TO_RUN \nWHERE MODEL_NAME='@{pipeline().parameters.Model_Name}'\nAND GROUP_ORDER=@{pipeline().parameters.Group_Level_iteration}\nGROUP BY MODEL_NAME, GROUP_NAME, MODEL_ORDER, GROUP_ORDER",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "t",
+							"table": "t"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Model_Name": {
+				"type": "string"
+			},
+			"Group_Level_iteration": {
+				"type": "string"
+			},
+			"Pipeline_Group_Run_ID": {
+				"type": "string"
+			},
+			"Pipeline_Model_Run_ID": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T10:58:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

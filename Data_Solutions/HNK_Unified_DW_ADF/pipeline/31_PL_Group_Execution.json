@@ -1,0 +1,208 @@
+{
+	"name": "31_PL_Group_Execution",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select '@{pipeline().parameters.Group_Level}' as group_level, '@{pipeline().parameters.Model_Name}' as Model_name",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "t",
+							"table": "t"
+						}
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1,int(pipeline().parameters.Group_Level))",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "PL_Nested_Group_Execution",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "41_PL_Nested_Group_Execution",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Model_Name": {
+										"value": "@pipeline().parameters.Model_Name",
+										"type": "Expression"
+									},
+									"Group_Level_iteration": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"Pipeline_Group_Run_ID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"Pipeline_Model_Run_ID": {
+										"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "CHECK_EXTRACTION_STATUS_END",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[config].[SP_CHECK_EXTRACTION_STATUS_END]",
+					"storedProcedureParameters": {
+						"FLG_SUCCESS": {
+							"value": "1",
+							"type": "String"
+						},
+						"model_name": {
+							"value": {
+								"value": "@pipeline().parameters.Model_Name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"pipeline_id": {
+							"value": {
+								"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"schema": "t",
+						"table": "t"
+					}
+				}
+			},
+			{
+				"name": "CHECK_EXTRACTION_STATUS_END_FAILED",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[config].[SP_CHECK_EXTRACTION_STATUS_END]",
+					"storedProcedureParameters": {
+						"FLG_SUCCESS": {
+							"value": "0",
+							"type": "String"
+						},
+						"model_name": {
+							"value": {
+								"value": "@pipeline().parameters.Model_Name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"pipeline_id": {
+							"value": {
+								"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"schema": "t",
+						"table": "t"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Model_Name": {
+				"type": "string"
+			},
+			"Group_Level": {
+				"type": "string"
+			},
+			"Pipeline_Model_Run_ID": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T10:58:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,54 @@
+{
+	"name": "01_PL_Main",
+	"properties": {
+		"activities": [
+			{
+				"name": "SP Update Execution_List_To_Run",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[config].[SP_EXECUTION_LIST_TO_RUN]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"schema": "t",
+						"table": "t"
+					}
+				}
+			},
+			{
+				"name": "PL_Model_To_Run",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SP Update Execution_List_To_Run",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "11_PL_Model_To_Run",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T10:58:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

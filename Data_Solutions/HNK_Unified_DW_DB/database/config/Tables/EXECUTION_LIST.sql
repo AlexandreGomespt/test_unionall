@@ -1,0 +1,26 @@
+﻿CREATE TABLE [config].[EXECUTION_LIST] (
+    [PK_EXECUTION_LIST]       INT             NOT NULL,
+    [MODEL_NAME]              NVARCHAR (255)  NOT NULL,
+    [GROUP_NAME]              NVARCHAR (255)  NOT NULL,
+    [OBJECT_NAME]             NVARCHAR (255)  NOT NULL,
+    [OBJECT_TYPE]             NVARCHAR (255)  NOT NULL,
+    [SOURCE_OBJECT_PATH]      NVARCHAR (255)  NULL,
+    [DESTINATION_OBJECT_PATH] NVARCHAR (255)  NULL,
+    [PERIODICITY]             NVARCHAR (255)  NOT NULL,
+    [PARAMETERS_LIST]         NVARCHAR (255)  NULL,
+    [DT_START_EXECUTION]      DATETIME        NULL,
+    [DT_END_EXECUTION]        DATETIME        NULL,
+    [FLG_IN_EXECUTION]        BIT             NULL,
+    [FLG_HAS_FINISHED]        BIT             NULL,
+    [FLG_IS_ACTIVE]           BIT             NOT NULL,
+    [DURATION]                FLOAT (53)      NULL,
+    [STATUS]                  NVARCHAR (255)  NULL,
+    [ERROR_MESSAGE]           NVARCHAR (2500) NULL,
+    [PIPELINE_ID]             NVARCHAR (255)  NULL,
+    [DT_CREATED]              DATETIME        DEFAULT (getdate()) NOT NULL,
+    [CREATED_BY]              NVARCHAR (255)  DEFAULT ((1)) NOT NULL,
+    [DT_MODIFIED]             DATETIME        DEFAULT (getdate()) NOT NULL,
+    [MODIFIED_BY]             NVARCHAR (255)  DEFAULT ((1)) NOT NULL,
+    PRIMARY KEY CLUSTERED ([PK_EXECUTION_LIST] ASC)
+);
+

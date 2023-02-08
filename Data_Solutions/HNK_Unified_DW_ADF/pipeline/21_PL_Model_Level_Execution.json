@@ -1,0 +1,147 @@
+{
+	"name": "21_PL_Model_Level_Execution",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Model Queue",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select \n t1.model_name\n,max(t1.GROUP_ORDER) as Model_group_order\n\nFROM [config].[EXECUTION_LIST_TO_RUN] T1\nwhere t1.MODEL_ORDER=@{pipeline().parameters.model_order_level}\ngroup by  t1.model_name",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "test",
+							"table": "test"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup Model Queue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Model Queue').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Execute Group Execution",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "CHECK_EXTRACTION_STATUS_START",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "31_PL_Group_Execution",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Model_Name": {
+										"value": "@item().model_name",
+										"type": "Expression"
+									},
+									"Group_Level": {
+										"value": "@item().Model_group_order",
+										"type": "Expression"
+									},
+									"Pipeline_Model_Run_ID": {
+										"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "CHECK_EXTRACTION_STATUS_START",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[config].[SP_CHECK_EXTRACTION_STATUS_START]",
+								"storedProcedureParameters": {
+									"model_name": {
+										"value": {
+											"value": "@item().model_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"pipeline_id": {
+										"value": {
+											"value": "@pipeline().parameters.Pipeline_Model_Run_ID",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"schema": "t",
+									"table": "t"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"model_order_level": {
+				"type": "string"
+			},
+			"Pipeline_Model_Run_ID": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T10:58:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

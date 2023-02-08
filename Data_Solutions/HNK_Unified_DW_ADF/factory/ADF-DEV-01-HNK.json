@@ -1,0 +1,9 @@
+{
+	"name": "ADF-DEV-01-HNK",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "859b4591-8836-41ec-8f67-04178c388278",
+		"tenantId": "cf36141c-ddd7-45a7-b073-111f66d0b30c"
+	}
+}

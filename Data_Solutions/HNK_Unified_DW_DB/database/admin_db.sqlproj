@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>admin_db</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{61ad3378-a3fd-4ed0-b0be-b319ae1175ca}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>database</RootNamespace>
+    <AssemblyName>database</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="config\" />
+    <Folder Include="config\Tables\" />
+    <Folder Include="config\Stored Procedures\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="config\Tables\CHECK_EXTRACTION_STATUS.sql" />
+    <Build Include="config\Tables\CONFIG_FILE.sql" />
+    <Build Include="config\Tables\CONFIG_OBJECT_DEPENDENCY.sql" />
+    <Build Include="config\Tables\CONFIG_GROUP_DEPENDENCY.sql" />
+    <Build Include="config\Tables\EXECUTION_LIST_TO_RUN.sql" />
+    <Build Include="config\Tables\CONFIG_MODEL.sql" />
+    <Build Include="config\Tables\EXECUTION_LIST_HIST.sql" />
+    <Build Include="config\Tables\EXECUTION_LIST.sql" />
+    <Build Include="config\Stored Procedures\SP_CONFIG_OBJECT_DEPENDENCY_DATA.sql" />
+    <Build Include="config\Stored Procedures\SP_CONFIG_FILE.sql" />
+    <Build Include="config\Stored Procedures\SP_Execution_List_Data.sql" />
+    <Build Include="config\Stored Procedures\SP_CONFIG_GROUP_DEPENDENCY_DATA.sql" />
+    <Build Include="config\Stored Procedures\SP_EXECUTION_LIST_TO_RUN.sql" />
+    <Build Include="config\Stored Procedures\SP_EXECUTION_LIST_TO_RUN1.sql" />
+    <Build Include="config\Stored Procedures\SP_Config_Model_Config_Object_Data.sql" />
+    <Build Include="config\Stored Procedures\SP_CHECK_EXTRACTION_STATUS_END.sql" />
+    <Build Include="config\Stored Procedures\SP_CHECK_EXTRACTION_STATUS_START.sql" />
+    <Build Include="config\Stored Procedures\EXECUTION_LIST_END.sql" />
+    <Build Include="config\Stored Procedures\EXECUTION_LIST_START.sql" />
+    <Build Include="config\Stored Procedures\SP_EXECUTION_LIST_TO_RUN_OLD.sql" />
+    <Build Include="config\Stored Procedures\SP_CONFIG_MODEL_DATA.sql" />
+    <Build Include="Security\config.sql" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+{
+	"name": "Cancel_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://management.azure.com/subscriptions/',\n'bc7b56cb-71ae-4211-9d27-c632b1e45a56',\n'/resourceGroups/',\n'HNK_UnifiedModel',\n'/providers/Microsoft.DataFactory/factories/',\npipeline().DataFactory,\n'/pipelineruns/',\npipeline().parameters.RUN_ID,\n'/cancel?api-version=2018-06-01')",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com/"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"RUN_ID": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-20T16:48:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
